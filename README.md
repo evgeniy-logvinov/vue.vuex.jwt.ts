@@ -28,3 +28,11 @@ yarn run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Problems
+Proxy Object not supported in IE11
+Can use Proxy object to send requests instead this solution.
+At this example we are not support IE11
+
+### Environments
+* VUE_APP_BASE_URI url to backend with api

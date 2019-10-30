@@ -1,18 +1,17 @@
-const mocks: any = {
-    'auth': { POST: { token: 'This-is-a-mocked-token' } },
-    'user/me': { GET: { name: 'doggo', title: 'sir' } },
-};
+import ApiClientService from '@/services/ApiClientService';
 
-const apiCall = ({ url, method, ...args }: any) => new Promise((resolve, reject) => {
-    setTimeout(() => {
-        try {
-            resolve(mocks[url][method || 'GET']);
-            console.log(`Mocked '${url}' - ${method || 'GET'}`);
-            console.log('response: ', mocks[url][method || 'GET']);
-        } catch (err) {
-            reject(new Error(err));
-        }
-    }, 1000);
-});
+// const mocks: any = {
+//     'auth': { POST: { token: 'This-is-a-mocked-token' } },
+//     'user/me': { GET: { name: 'doggo', title: 'sir' } },
+// };
+
+const apiCall = async ({ requestApi: { method, url }, data, params, ...args }: any) => {
+    return await new ApiClientService().client({
+        method,
+        url,
+        data,
+        params,
+    });
+};
 
 export default apiCall;

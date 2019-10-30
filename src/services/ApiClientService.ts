@@ -3,10 +3,13 @@ import axios from 'axios';
 export const RestErrors = {
     UNAUTHORAIZED: 401,
     FORBIDDEN: 403,
-}
+};
+
+const apiV1 = 'api/v1/';
+
 export default class ApiClientService {
+    public client: any = {};
     private defaultHeaders: any = {};
-    private client: any = {};
 
     constructor(options: any = {}) {
         this.defaultHeaders = options.headers || {
@@ -16,13 +19,12 @@ export default class ApiClientService {
 
         this.client = options.client ||
             axios.create({
-                baseURL: process.env.API_URL ? process.env.API_URL : '',
+                baseURL: process.env.VUE_APP_BASE_URI ? `${process.env.VUE_APP_BASE_URI}${apiV1}` : `${apiV1}`,
                 headers: this.defaultHeaders,
             });
 
         this.client.interceptors.request.use(
             (config: any) => {
-                console.log('interseptor request');
                 if (!localStorage.getItem('token')) {
                     return config;
                 }
@@ -39,30 +41,32 @@ export default class ApiClientService {
         );
 
         this.client.interceptors.response.use(
-            (r: any) => r,
+            (r: any) => r.data,
             async (error: any) => {
+                console.log('=========>')
                 console.log('interseptor response error');
                 if (error.response && error.response.status === RestErrors.FORBIDDEN) {
                     this.removeTokens();
                     throw new Error('USER_UNAUTHORAIZED');
                 }
-
-                if (error.response && error.response.status === RestErrors.UNAUTHORAIZED && !error.config.retry) {
-                    try {
-                        const {data} = await this.createRefreshRequest();
-                        this.setTokens({token: data.token, refresh: data.refresh});
-                        const newRequest = {
-                            ...error.config,
-                            retry: true,
-                        }
-                        return this.client(newRequest);
-                    } catch (err) {
-                        console.warn('');
-                        throw err;
-                    } finally {
-                        // this.refreshRequest = '';
-                    }
-                }
+                // if (error.response && error.response.status === RestErrors.UNAUTHORAIZED && !error.config.retry) {
+                //     console.log('true', error.config);
+                //     try {
+                //         const {data} = await this.createRefreshRequest();
+                //         this.setTokens({token: data.token, refresh: data.refresh});
+                //         const newRequest = {
+                //             ...error.config,
+                //             retry: true,
+                //         }
+                //         console.log(newRequest)
+                //         // return this.client(newRequest);
+                //     } catch (err) {
+                //         console.warn('');
+                //         throw err;
+                //     } finally {
+                //         this.refreshRequest = null;
+                //     }
+                // }
                 throw error;
             },
             (e: any) => Promise.reject(e),
@@ -80,7 +84,6 @@ export default class ApiClientService {
     }
 
     private async createRefreshRequest() {
-        console.log('createRefreshRequest');
         return Promise.resolve({data: {token: 'test-token', refresh: 'test-refresh'}});
     }
 }

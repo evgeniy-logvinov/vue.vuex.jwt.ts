@@ -4,7 +4,7 @@
     <div class="login-form">
       <div class="login">
         <label>Login</label>
-        <input v-model="auth.login">
+        <input v-model="auth.email">
       </div>
       <div class="password">
         <label>Password</label>
@@ -23,7 +23,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import {AUTH_REQUEST, AUTH_LOGOUT} from '@/store/actions/auth'
 
 interface Auth {
-  login: string;
+  email: string;
   password: string;
 }
 
@@ -32,7 +32,7 @@ export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
   private auth: Auth = {
-    login: '',
+    email: '',
     password: '',
   };
 
