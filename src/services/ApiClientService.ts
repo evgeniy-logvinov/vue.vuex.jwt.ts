@@ -32,6 +32,7 @@ export default class ApiClientService {
                     ...this.defaultHeaders,
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 };
+
                 return {
                     ...config,
                     headers: newHeaders,
@@ -43,8 +44,6 @@ export default class ApiClientService {
         this.client.interceptors.response.use(
             (r: any) => r.data,
             async (error: any) => {
-                console.log('=========>')
-                console.log('interseptor response error');
                 if (error.response && error.response.status === RestErrors.FORBIDDEN) {
                     this.removeTokens();
                     throw new Error('USER_UNAUTHORAIZED');

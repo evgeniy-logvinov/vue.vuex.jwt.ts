@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import {AUTH_REQUEST, AUTH_LOGOUT} from '@/store/actions/auth'
+import {AUTH_REQUEST, AUTH_LOGOUT} from '@/store/actions/security';
 
 interface Auth {
   email: string;
@@ -37,15 +37,19 @@ export default class HelloWorld extends Vue {
   };
 
   private async login() {
-    console.log('login pressed')
-    const data = await this.$store.dispatch(AUTH_REQUEST, this.auth);
-    console.log(data)
+    try {
+      const data = await this.$store.dispatch(AUTH_REQUEST, this.auth);
+    } catch (err) {
+      alert(err);
+    }
   }
 
   private async logout() {
-    console.log('logout pressed')
-    const data = await this.$store.dispatch(AUTH_LOGOUT);
-    console.log(data)
+    try {
+      await this.$store.dispatch(AUTH_LOGOUT);
+    } catch (err) {
+      alert(err);
+    }
   }
 
 }

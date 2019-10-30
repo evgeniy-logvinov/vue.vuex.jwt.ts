@@ -1,4 +1,4 @@
-import RequestTypes from 'utils/RequestTypes';
+import RequestTypes from '@/api/RequestTypes';
 
 export default {
     login: { method: RequestTypes.POST, url: '/security/login'},
